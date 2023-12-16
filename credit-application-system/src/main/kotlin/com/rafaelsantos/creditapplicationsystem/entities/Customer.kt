@@ -3,7 +3,7 @@ package com.rafaelsantos.creditapplicationsystem.entities
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "tb_customer")
+@Table(name = "Customer")
 data class Customer(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
