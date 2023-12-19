@@ -16,7 +16,7 @@ data class Customer(
     var lastName: String = "",
 
     @Column(nullable = false)
-    val income: BigDecimal = BigDecimal.ZERO,
+    var income: BigDecimal = BigDecimal.ZERO,
 
     @Column(nullable = false, unique = true)
     val cpf: String,
