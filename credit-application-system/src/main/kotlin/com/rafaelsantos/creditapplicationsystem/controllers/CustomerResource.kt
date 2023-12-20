@@ -5,6 +5,7 @@ import com.rafaelsantos.creditapplicationsystem.dto.CustomerUpdateDTO
 import com.rafaelsantos.creditapplicationsystem.dto.CustomerView
 import com.rafaelsantos.creditapplicationsystem.entities.Customer
 import com.rafaelsantos.creditapplicationsystem.services.implementations.CustomerService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,7 +25,7 @@ class CustomerResource (
 ){
 
     @PostMapping
-    fun saveCustomer(@RequestBody customerDTO: CustomerDTO): ResponseEntity<String>{
+    fun saveCustomer(@RequestBody @Valid customerDTO: CustomerDTO): ResponseEntity<String>{
         val savedCustomer = this.customerService.save(customerDTO.toEntity())
         return ResponseEntity.status(HttpStatus.CREATED).body("Customer ${savedCustomer.email} saved")
     }
