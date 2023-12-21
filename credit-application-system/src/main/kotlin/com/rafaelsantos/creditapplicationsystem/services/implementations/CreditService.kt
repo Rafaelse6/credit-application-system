@@ -1,6 +1,7 @@
 package com.rafaelsantos.creditapplicationsystem.services.implementations
 
 import com.rafaelsantos.creditapplicationsystem.entities.Credit
+import com.rafaelsantos.creditapplicationsystem.exceptions.BusinessException
 import com.rafaelsantos.creditapplicationsystem.repositories.CreditRepository
 import com.rafaelsantos.creditapplicationsystem.services.ICreditService
 import org.springframework.stereotype.Service
@@ -25,8 +26,8 @@ class CreditService(
     override fun findByCreditCode(customerId: Long, creditCode: UUID): Credit {
        val credit: Credit =
            (this.creditRepository.findByCreditCode(creditCode)
-               ?: throw RuntimeException("Credit $creditCode not found !"))
-        return if(credit.customer?.id == customerId) credit else throw RuntimeException("Contact admin")
+               ?: throw BusinessException("Credit $creditCode not found !"))
+        return if(credit.customer?.id == customerId) credit else throw IllegalArgumentException("Contact admin")
     }
 
 }
