@@ -21,7 +21,7 @@
     </a>
 </p>
 
-<h3>Descrição do Projeto</h3>
+<h3> Project description(in Portuguese)</h3>
 <p><a href="https://gist.github.com/cami-la/560b455b901778391abd2c9edea81286">https://gist.github.com/cami-la/560b455b901778391abd2c9edea81286</a></p>
 <figure>
 <p align="center">
