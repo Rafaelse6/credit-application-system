@@ -2,6 +2,7 @@ package com.rafaelsantos.creditapplicationsystem.service
 
 import com.rafaelsantos.creditapplicationsystem.entities.Address
 import com.rafaelsantos.creditapplicationsystem.entities.Customer
+import com.rafaelsantos.creditapplicationsystem.exceptions.BusinessException
 import com.rafaelsantos.creditapplicationsystem.repositories.CustomerRepository
 import com.rafaelsantos.creditapplicationsystem.services.implementations.CustomerService
 import io.mockk.every
@@ -54,6 +55,20 @@ class CustomerServiceTest {
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isExactlyInstanceOf(Customer::class.java)
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
+        verify(exactly = 1)  {customerRepository.findById(fakeId)}
+    }
+
+    @Test
+    fun `should not find customer by invalid id and throw Business exception`(){
+
+        //given
+        val fakeId : Long = Random().nextLong()
+        every { customerRepository.findById(fakeId) } returns Optional.empty()
+
+        //when && then
+        Assertions.assertThatExceptionOfType(BusinessException::class.java)
+            .isThrownBy { customerService.findById(fakeId) }
+            .withMessage("Id $fakeId not found!")
         verify(exactly = 1)  {customerRepository.findById(fakeId)}
     }
 
