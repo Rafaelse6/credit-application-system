@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.util.UUID
 import kotlin.random.Random
 
 @ExtendWith(MockKExtension::class)
@@ -92,6 +93,26 @@ class CreditServiceTest {
 
        verify(exactly = 1) { creditRepository.findAllByCustomerId(customerId) }
    }
+
+    @Test
+    fun `should return credit when valid customer and valid credit`(){
+        //given
+        val customerId: Long = 1
+        val creditCode: UUID = UUID.randomUUID()
+        val credit: Credit = buildCredit(customer = Customer(id = customerId))
+
+        every { creditRepository.findByCreditCode(creditCode) } returns credit
+
+        //when
+        val actual: Credit = creditService.findByCreditCode(customerId, creditCode)
+
+        //then
+        Assertions.assertThat(actual).isNotNull
+        Assertions.assertThat(actual).isSameAs(credit)
+
+        verify(exactly = 1) { creditRepository.findByCreditCode(creditCode) }
+    }
+
 
     private fun buildCredit(
         creditValue: BigDecimal = BigDecimal.valueOf(100.0),
