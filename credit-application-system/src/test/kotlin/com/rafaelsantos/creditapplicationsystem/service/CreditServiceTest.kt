@@ -39,7 +39,6 @@ class CreditServiceTest {
 
    @Test
    fun `should create credit`(){
-
        //given
        val credit:Credit = buildCredit()
        val customerId: Long = 1
@@ -60,7 +59,6 @@ class CreditServiceTest {
 
    @Test
    fun `should not save credit when invalid data`(){
-
        //given
        val invalidDayOfInstallment: LocalDate = LocalDate.now().plusMonths(7)
        val credit: Credit = buildCredit(dayFirstInstallment = invalidDayOfInstallment)
@@ -73,8 +71,26 @@ class CreditServiceTest {
            .hasMessage("Invalid Date")
 
        //then
-
        verify(exactly = 0) { creditRepository.save(any()) }
+   }
+
+   @Test
+   fun `should find all credits by customer`(){
+       //given
+       val customerId: Long = 1
+       val listOfCredits : List<Credit> = listOf(buildCredit(), buildCredit(), buildCredit())
+
+       every { creditRepository.findAllByCustomerId(customerId) } returns listOfCredits
+
+       //when
+       val actual : List<Credit> = creditService.findAllByCustomer(customerId)
+
+       //then
+       Assertions.assertThat(actual).isNotNull
+       Assertions.assertThat(actual).isNotEmpty
+       Assertions.assertThat(actual).isSameAs(listOfCredits)
+
+       verify(exactly = 1) { creditRepository.findAllByCustomerId(customerId) }
    }
 
     private fun buildCredit(
