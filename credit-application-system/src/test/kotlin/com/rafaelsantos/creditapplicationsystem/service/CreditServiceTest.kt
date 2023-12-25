@@ -3,6 +3,7 @@ package com.rafaelsantos.creditapplicationsystem.service
 import com.rafaelsantos.creditapplicationsystem.entities.Address
 import com.rafaelsantos.creditapplicationsystem.entities.Credit
 import com.rafaelsantos.creditapplicationsystem.entities.Customer
+import com.rafaelsantos.creditapplicationsystem.exceptions.BusinessException
 import com.rafaelsantos.creditapplicationsystem.repositories.CreditRepository
 import com.rafaelsantos.creditapplicationsystem.services.implementations.CreditService
 import com.rafaelsantos.creditapplicationsystem.services.implementations.CustomerService
@@ -55,6 +56,25 @@ class CreditServiceTest {
 
        Assertions.assertThat(actual).isNotNull
        Assertions.assertThat(actual).isSameAs(credit)
+   }
+
+   @Test
+   fun `should not save credit when invalid data`(){
+
+       //given
+       val invalidDayOfInstallment: LocalDate = LocalDate.now().plusMonths(7)
+       val credit: Credit = buildCredit(dayFirstInstallment = invalidDayOfInstallment)
+
+       every { creditRepository.save(credit) } answers { credit }
+
+       //when
+       Assertions.assertThatThrownBy { creditService.save(credit) }
+           .isInstanceOf(BusinessException::class.java)
+           .hasMessage("Invalid Date")
+
+       //then
+
+       verify(exactly = 0) { creditRepository.save(any()) }
    }
 
     private fun buildCredit(
