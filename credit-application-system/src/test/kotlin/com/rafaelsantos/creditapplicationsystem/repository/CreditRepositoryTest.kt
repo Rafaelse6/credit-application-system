@@ -22,8 +22,11 @@ import java.util.*
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CreditRepositoryTest {
-    @Autowired lateinit var creditRepository: CreditRepository
-    @Autowired lateinit var testEntityManager: TestEntityManager
+    @Autowired
+    lateinit var creditRepository: CreditRepository
+
+    @Autowired
+    lateinit var testEntityManager: TestEntityManager
 
     private lateinit var customer: Customer
     private lateinit var credit1: Credit
@@ -45,7 +48,7 @@ class CreditRepositoryTest {
         //when
         val fakeCredit1: Credit = creditRepository.findByCreditCode(creditCode1)!!
         val fakeCredit2: Credit = creditRepository.findByCreditCode(creditCode2)!!
-        
+
         //then
         Assertions.assertThat(fakeCredit1).isNotNull
         Assertions.assertThat(fakeCredit2).isNotNull
@@ -53,6 +56,20 @@ class CreditRepositoryTest {
         Assertions.assertThat(fakeCredit2).isSameAs(credit2)
     }
 
+
+    @Test
+    fun `should find all credits by customer id`(){
+        //given
+        val customerId: Long = 1L
+
+        //when
+        val creditList: List<Credit> = creditRepository.findAllByCustomerId(customerId)
+
+        //then
+        Assertions.assertThat(creditList).isNotEmpty
+        Assertions.assertThat(creditList.size).isEqualTo(2)
+        Assertions.assertThat(creditList).contains(credit1, credit2)
+    }
 
     private fun buildCredit(
         creditValue: BigDecimal = BigDecimal.valueOf(500.0),
