@@ -2,6 +2,7 @@ package com.rafaelsantos.creditapplicationsystem.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.rafaelsantos.creditapplicationsystem.dto.CustomerDTO
+import com.rafaelsantos.creditapplicationsystem.entities.Customer
 import com.rafaelsantos.creditapplicationsystem.repositories.CustomerRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -112,6 +113,27 @@ class CustomerResourceTest {
                     .value("class org.springframework.web.bind.MethodArgumentNotValidException")
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should find customer by id and should return 200 status`(){
+        //given
+        val customer: Customer = customerRepository.save(builderCustomerDTO().toEntity())
+
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("$URL/${customer.id}")
+            .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Cami"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("28475934625"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("1000.0"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("000000"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami, 123"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
             .andDo(MockMvcResultHandlers.print())
     }
 
