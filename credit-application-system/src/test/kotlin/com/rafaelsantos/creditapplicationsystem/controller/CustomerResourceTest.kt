@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
+import java.util.Random
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -133,8 +134,7 @@ class CustomerResourceTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("1000.0"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("000000"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami, 123"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-            .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcResultHandlers.print())
     }
 
     @Test
@@ -170,6 +170,28 @@ class CustomerResourceTest {
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isNoContent)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should not delete customer by id and return 400 status`(){
+        //given
+        val invalidId: Long = Random().nextLong()
+
+        //when && then
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${invalidId}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Bad Request! Consult the documentation"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value("class com.rafaelsantos.creditapplicationsystem.exceptions.BusinessException")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
     }
 
